@@ -221,7 +221,7 @@ $(document).ready(function() {
     })
 });
 function punch (event) {
-    let $id = $(this).attr("value");
+    let $id = {!! Request::route('id') !!};
     let $punch_year_month = document.getElementById("punch_year_month").innerHTML;
     let $punch_date = document.getElementById("punch_date").innerHTML;
     let $punch_time = document.getElementById("punch_time").innerHTML;
