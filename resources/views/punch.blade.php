@@ -12,11 +12,22 @@
     .title {
         font-size:80px;
     }
-    .title a:link {
-        color: #333333; 
+    .thumbnail a:link {
+        text-decoration: none;
+        color: #337ab7; 
+    }
+    .thumbnail:hover{
+        opacity: 0.7;
+    }
+    .title_image {
+        font-size:50px;
+        text-align: center;
+    }
+    .title_image:link {
+        color: #337ab7; 
         text-decoration: none;
     }
-    .title a:hover {
+    .title_image a:hover {
         opacity: 0.7;
     }
     .btn-primary {
@@ -47,6 +58,9 @@
         margin-top: 2rem;
         margin-bottom: 2rem;
     }
+    img {
+  max-width: 100%;
+}
     @media (min-width: 480px) {
     }
 </style>
@@ -65,33 +79,26 @@
         <div class="row">
         
             <div class="bd-example" class="punch-center">
-            @foreach($start_punch as $s)
-                <button type="button" class="btn btn-primary btn-lg title" style="margin: 1% 1%; width: 350px;">
-                    <a href="/punch/{{ $s->id }}">{{ $s->name }}</a>
-                </button>
+            @foreach($users as $user)
+            <div class="col-md-3">
+                <div class="thumbnail">
+                    <a href="/punch/{{ $user->id }}">
+                        @if (isset($user->img_src))
+                            <img src="{{ URL::asset('uploads/'.$user->img_src) }}" alt="Lights" style="width:300px; height:200px;">
+                        @else
+                            <img src="https://dummyimage.com/600x400/87a1b0/fff.png&text=%E5%BF%97%E6%B3%B0%E9%A4%98%E7%B4%99%E8%A2%8B%E5%B1%95%E6%A5%AD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8" alt="Lights" style="width:300px; height:200px;">
+                        @endif
+                        <div class="caption title_image">
+                            <p>{{ $user->name }}</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+                <!--button type="button" class="btn btn-primary btn-lg title" style="margin: 1% 1%; width: 350px;">
+                    <a href="/punch/{{ $user->id }}">{{ $user->name }}</a>
+                </button-->
             @endforeach
             <div>
-            <!--div class="col-sm-4" style="text-align: center;">
-                <a href="/punch/{{ $s->id }}">{{ $s->name }}</a>
-                <div class="alert_{{ $s->id }} alert-warning" style="display:none; position: absolute; width: 90%; margin-left: 3%;" id="alertIp">
-                    <a href="#" class="close">
-                        &times;
-                    </a><p class="errormsg_{{ $s->id }}" style="font-size: 18px;"></p>
-                </div>
-                <div class="links title">
-                        @if (isset($s->start_time))
-                            <button type="button" class="btn btn-primary btn-lg" disabled="true">上班</button>
-                        @else
-                            <button id='start' type="button" class="btn btn-primary btn-lg" value={{ $s->id }}>上班</button>
-                        @endif
-                        @if (isset($s->stop_time))
-                            <button type="button" class="btn btn-success btn-lg" disabled="true">下班</button>
-                        @else
-                            <button id='stop' type="button" class="btn btn-success btn-lg" value={{ $s->id }}>下班</button>
-                        @endif
-                </div>
-            </div-->
-        
         </div>
     </div>
 </div>

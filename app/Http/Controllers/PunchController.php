@@ -13,13 +13,10 @@ class PunchController extends Controller
 {
     public function index()
     {
-        $now = Carbon::now();
-        $punch = new Punch;
         $users = new User;
         $users = $users->get();
-        $start_punch = $punch::where('punch_date', $now->day)->where('punch_year_month', $now->format('Ym'))->get();
 
-        foreach ($users as $user) {
+        /*foreach ($users as $user) {
             foreach ($start_punch as $start) {
                 if ($user["id"] == $start["userid"]) {
                     //上班時間
@@ -33,8 +30,8 @@ class PunchController extends Controller
                     }
                 }
             }
-        }
-        return view('punch',['start_punch' => $users]);
+        }*/
+        return view('punch',['users' => $users]);
     }
 
     public function start(Request $request) {
