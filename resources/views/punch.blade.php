@@ -63,7 +63,7 @@
                         &times;
                     </a><p class="errormsg_{{ $s->id }}" style="font-size: 18px;"></p>
                 </div>
-                <div class="links title">
+                <!--div class="links title">
                         @if (isset($s->start_time))
                             <button type="button" class="btn btn-primary btn-lg" disabled="true">上班</button>
                         @else
@@ -74,7 +74,7 @@
                         @else
                             <button id='stop' type="button" class="btn btn-success btn-lg" value={{ $s->id }}>下班</button>
                         @endif
-                </div>
+                </div-->
             </div>
         @endforeach
         </div>
@@ -121,7 +121,7 @@
         document.getElementById("punch_time").innerHTML = hours + ":" + minutes;
     }
 
-    function punch (event) {
+    /*function punch (event) {
         let $id = $(this).attr("value");
         let $punch_year_month = document.getElementById("punch_year_month").innerHTML;
         let $punch_date = document.getElementById("punch_date").innerHTML;
@@ -154,6 +154,6 @@
                 }             
             }
         });
-    }
+    }*/
 </script>
 @stop

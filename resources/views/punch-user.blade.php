@@ -26,13 +26,23 @@
 <div class="flex-center position-ref full-height">
     <div class="content">
         <div class="title m-b-md">
-            <button type="button" class="btn btn-default"><a href="{{ route('punch') }}">上一頁</a></button>
+            <!--button type="button" class="btn btn-default"><a href="{{ route('punch') }}">上一頁</a></button-->
+            <div class="col-4">
+                <p id="display-datetime" style="text-align: center;"></p>
+                <p id="punch_year_month" style="display: none;"></p>
+                <p id="punch_date" style="display: none;"></p>
+                <p id="punch_time" style="display: none;"></p>
+            </div>
         </div>
         <div class="container">
             <div class="row">
                 <div class="col-md-8 col-md-offset-2">
                     <div class="panel panel-default">
-                        <div class="panel-heading" style="font-size: 30px;">{{ $user_name }}</div>
+                        <div class="panel-heading" style="font-size: 30px;">
+                            {{ $user_name }}
+                            <button type="button" class="btn btn-primary btn-lg" style="float: left;">上班</button>
+                            <button type="button" class="btn btn-success btn-lg" style="float: right;">下班</button>
+                        </div>
                         <div class="panel-body">
                             <div id='calendar'></div>
                         </div>
@@ -78,6 +88,13 @@
 <script type="text/javascript">
 <!--
 $(document).ready(function() {
+    setInterval(function(){
+        var date = new Date();
+        var format = "YYYY-MMM-DD DDD";
+        dateConvert(date,format)
+    }, 1);
+    $(".btn-primary").click({url: "{{ url('/punch/start_work/') }}"}, punch);
+    $(".btn-success").click({url: "{{ url('/punch/stop_work/') }}"}, punch);
     $("#loginModal").modal('show');
     $('#loginModal').on('hidden.bs.modal', function () {
         window.location.href = "{{ route('punch') }}";
@@ -203,6 +220,67 @@ $(document).ready(function() {
         daysOfWeekDisabled: "0",
     })
 });
+function punch (event) {
+    let $id = $(this).attr("value");
+    let $punch_year_month = document.getElementById("punch_year_month").innerHTML;
+    let $punch_date = document.getElementById("punch_date").innerHTML;
+    let $punch_time = document.getElementById("punch_time").innerHTML;
+    var success_result;
+    var element = this;
+    var error_result;
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: "POST",
+        data: { 
+            "id" : $id , 
+            "punch_year_month" : $punch_year_month , 
+            "punch_date" : $punch_date,
+            "punch_time" : $punch_time,
+        },
+        dataType: "json",
+        url: event.data.url,
+        success: function(result){
+            $("[class^=alert_]").hide();
+            $(element).attr("disabled", true);
+        },
+        error: function(result){
+            if (result.status === 401) {
+                $("[class^=alert_]").hide();
+                $(".alert_"+$id).show();
+                $(".errormsg_"+$id).html("請確認您登入的IP" + result.responseText);
+            }             
+        }
+    });
+}
+function dateConvert(dateobj, format) {
+    var year = dateobj.getFullYear();
+    var month= ("0" + (dateobj.getMonth()+1)).slice(-2);
+    var date = ("0" + dateobj.getDate()).slice(-2);
+    var hours = ("0" + dateobj.getHours()).slice(-2);
+    var minutes = ("0" + dateobj.getMinutes()).slice(-2);
+    var seconds = ("0" + dateobj.getSeconds()).slice(-2);
+    var day = dateobj.getDay();
+    var months = ["01","02","03","04","05","06","07","08","09","10","11","12"];
+    var converted_date = "";
+
+    switch(format) {
+        case "YYYY-MM-DD":
+            converted_date = year + "-" + month + "-" + date;
+            break;
+        case "YYYY-MMM-DD DDD":
+            converted_date = year + "-" + months[parseInt(month)-1] + "-" + date
+            + " " + hours + ":" + minutes;
+            break;
+    }
+    //return converted_date;
+    // to show it I used innerHTMl in a <p> tag
+    document.getElementById("display-datetime").innerHTML = converted_date;
+    document.getElementById("punch_year_month").innerHTML = year + months[parseInt(month)-1];
+    document.getElementById("punch_date").innerHTML = date;
+    document.getElementById("punch_time").innerHTML = hours + ":" + minutes;
+}
 //-->
 </script>
 @stop
