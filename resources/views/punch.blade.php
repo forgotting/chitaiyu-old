@@ -19,6 +19,12 @@
     .title a:hover {
         opacity: 0.7;
     }
+    .btn-primary {
+        background-color: #efefef;
+    }
+    .btn-primary:hover {
+        background-color: #337ab7;
+    }
     body {
         padding-top: 2rem;
         padding-bottom: 2rem;

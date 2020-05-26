@@ -63,11 +63,11 @@
 <div class="flex-center position-ref full-height">
     <div class="content">
         <div class="title m-b-md">
-            丞德文創
+            志泰餘
         </div>
 
         <div class="links">
-            <a href="quote/1">報價</a>
+            <!--a href="quote/1">報價</a-->
             <a href="{{ route('punch') }}">打卡</a>
             <a href="admin">Admin</a>
         </div>
