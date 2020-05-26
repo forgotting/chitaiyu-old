@@ -40,8 +40,16 @@
                     <div class="panel panel-default">
                         <div class="panel-heading" style="font-size: 30px;">
                             {{ $user_name }}
-                            <button type="button" class="btn btn-primary btn-lg" style="float: left;">上班</button>
-                            <button type="button" class="btn btn-success btn-lg" style="float: right;">下班</button>
+                            @if ($start_punch != "")
+                                <button type="button" class="btn btn-primary btn-lg" style="float: left;" disabled="true">{{ $start_punch }}</button>
+                            @else
+                                <button type="button" id="work" value={{ Request::route('id') }} class="btn btn-primary btn-lg" style="float: left;">上班</button>
+                            @endif
+                            @if ($finish_punch != "")
+                                <button type="button" class="btn btn-success btn-lg" style="float: right;" disabled="true">{{ $finish_punch }}</button>
+                            @else
+                                <button type="button" id="finish" value={{ Request::route('id') }} class="btn btn-success btn-lg" style="float: right;">下班</button>
+                            @endif
                         </div>
                         <div class="panel-body">
                             <div id='calendar'></div>
@@ -93,8 +101,8 @@ $(document).ready(function() {
         var format = "YYYY-MMM-DD DDD";
         dateConvert(date,format)
     }, 1);
-    $(".btn-primary").click({url: "{{ url('/punch/start_work/') }}"}, punch);
-    $(".btn-success").click({url: "{{ url('/punch/stop_work/') }}"}, punch);
+    $("#work").click({url: "{{ url('/punch/start_work/') }}", status: 1}, punch);
+    $("#finish").click({url: "{{ url('/punch/stop_work/') }}", status: 2}, punch);
     $("#loginModal").modal('show');
     $('#loginModal').on('hidden.bs.modal', function () {
         window.location.href = "{{ route('punch') }}";
@@ -221,10 +229,10 @@ $(document).ready(function() {
     })
 });
 function punch (event) {
-    let $id = {!! Request::route('id') !!};
-    let $punch_year_month = document.getElementById("punch_year_month").innerHTML;
-    let $punch_date = document.getElementById("punch_date").innerHTML;
-    let $punch_time = document.getElementById("punch_time").innerHTML;
+    let id = {!! Request::route('id') !!};
+    let punch_year_month = document.getElementById("punch_year_month").innerHTML;
+    let punch_date = document.getElementById("punch_date").innerHTML;
+    let punch_time = document.getElementById("punch_time").innerHTML;
     var success_result;
     var element = this;
     var error_result;
@@ -234,22 +242,40 @@ function punch (event) {
         },
         type: "POST",
         data: { 
-            "id" : $id , 
-            "punch_year_month" : $punch_year_month , 
-            "punch_date" : $punch_date,
-            "punch_time" : $punch_time,
+            "id" : id , 
+            "punch_year_month" : punch_year_month , 
+            "punch_date" : punch_date,
+            "punch_time" : punch_time,
         },
         dataType: "json",
         url: event.data.url,
         success: function(result){
             $("[class^=alert_]").hide();
             $(element).attr("disabled", true);
+            $(element).html(result.punch_time);
+            if (result.description == "1") {
+                $('#calendar').fullCalendar('renderEvent', 
+                {
+                    title: '上班 ' + result.punch_time,
+                    start: result.punch_date + ' ' + result.punch_time,
+                    color: '#337AB7',
+                }, true);
+            }
+            if (result.description == "2") {
+                $('#calendar').fullCalendar('renderEvent', 
+                {
+                    title: '下班 ' + result.punch_time,
+                    start: result.punch_date + ' ' + result.punch_time,
+                    color: '#5CB85C',
+                }, true);
+            }
         },
         error: function(result){
             if (result.status === 401) {
                 $("[class^=alert_]").hide();
-                $(".alert_"+$id).show();
-                $(".errormsg_"+$id).html("請確認您登入的IP" + result.responseText);
+                $(".alert_"+id).show();
+                alert(result.responseText);
+                //$(".errormsg_"+$id).html("請確認您登入的IP" + result.responseText);
             }             
         }
     });

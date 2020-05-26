@@ -41,6 +41,8 @@
         margin-top: 2rem;
         margin-bottom: 2rem;
     }
+    @media (min-width: 480px) {
+    }
 </style>
 
 <div class="flex-center position-ref full-height">
@@ -55,15 +57,22 @@
         </div>
 
         <div class="row">
-        @foreach($start_punch as $s)
-            <div class="col-sm-4 title" style="text-align: center;">
+        
+            <div class="bd-example" class="punch-center">
+            @foreach($start_punch as $s)
+                <button type="button" class="btn btn-primary btn-lg title" style="margin: 1% 1%; width: 350px;">
+                    <a href="/punch/{{ $s->id }}">{{ $s->name }}</a>
+                </button>
+            @endforeach
+            <div>
+            <!--div class="col-sm-4" style="text-align: center;">
                 <a href="/punch/{{ $s->id }}">{{ $s->name }}</a>
                 <div class="alert_{{ $s->id }} alert-warning" style="display:none; position: absolute; width: 90%; margin-left: 3%;" id="alertIp">
                     <a href="#" class="close">
                         &times;
                     </a><p class="errormsg_{{ $s->id }}" style="font-size: 18px;"></p>
                 </div>
-                <!--div class="links title">
+                <div class="links title">
                         @if (isset($s->start_time))
                             <button type="button" class="btn btn-primary btn-lg" disabled="true">上班</button>
                         @else
@@ -74,9 +83,9 @@
                         @else
                             <button id='stop' type="button" class="btn btn-success btn-lg" value={{ $s->id }}>下班</button>
                         @endif
-                </div-->
-            </div>
-        @endforeach
+                </div>
+            </div-->
+        
         </div>
     </div>
 </div>
@@ -89,8 +98,8 @@
             var format = "YYYY-MMM-DD DDD";
             dateConvert(date,format)
         }, 1);
-        $(".btn-primary").click({url: "{{ url('/punch/start_work/') }}"}, punch);
-        $(".btn-success").click({url: "{{ url('/punch/stop_work/') }}"}, punch);
+        //$(".btn-primary").click({url: "{{ url('/punch/start_work/') }}"}, punch);
+        //$(".btn-success").click({url: "{{ url('/punch/stop_work/') }}"}, punch);
     });
 
     function dateConvert(dateobj, format) {

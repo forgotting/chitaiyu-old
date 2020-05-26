@@ -52,8 +52,10 @@ class PunchController extends Controller
             $punch->description = "1";
             $punch->save();
         }
+        $year_month = substr($punch_year_month, 0, 4) . "-" .substr($punch_year_month, -2);
+        $punch_date = $year_month . "-" . $punch_date;
 
-        return response()->json(['punch_time' => $punch_time]);
+        return response()->json(['punch_date' => $punch_date, 'punch_time' => $punch_time, 'description' => "1"]);
     }
 
     public function stop(Request $request) {
@@ -72,21 +74,34 @@ class PunchController extends Controller
             $punch->save();
         }
 
-        return response()->json(['punch_time' => $punch_time]);
+        $year_month = substr($punch_year_month, 0, 4) . "-" .substr($punch_year_month, -2);
+        $punch_date = $year_month . "-" . $punch_date;
+
+        return response()->json(['punch_date' => $punch_date, 'punch_time' => $punch_time, 'description' => "2"]);
     }
 
     public function user_punch($id) {
+        $now = Carbon::now();
         $events = [];
         $punch = new Punch;
         $punches = $punch::where('userid', $id)->get();
         $users = new User;
         $user_name = $users::where('id', $id)->first()->name;
+        $start_punch = "";
+        $finish_punch = "";
 
         foreach ($punches as $key => $value) {
             $title = "上班";
             $end_year_month = "";
             $year_month = substr($value->punch_year_month, 0, 4) . "-" .substr($value->punch_year_month, -2);
             
+            if ($value->punch_year_month == $now->format('Ym') && $value->punch_date == $now->day) {
+                if ($value->description == "1")
+                    $start_punch = $value->punch_time;
+                
+                if ($value->description == "2")
+                    $finish_punch = $value->punch_time;
+            }
             if (isset($value->punch_end_year_month))
                 $end_year_month = substr($value->punch_end_year_month, 0, 4) . "-" .substr($value->punch_end_year_month, -2);
             //print($end_year_month);
@@ -107,7 +122,7 @@ class PunchController extends Controller
               }');
         }
 
-        return view('punch-user', ['events' => $events, 'user_name' => $user_name]);
+        return view('punch-user', ['events' => $events, 'user_name' => $user_name, 'start_punch' => $start_punch, 'finish_punch' => $finish_punch]);
     }
 
     public function checkuser($id, $password) {
