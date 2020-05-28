@@ -26,7 +26,7 @@
 <div class="flex-center position-ref full-height">
     <div class="content">
         <span class="invalid-feedback alert-danger" style="font-size: 30px;" role="alert">
-            <strong id="alertCheckIp">test</strong>
+            <strong id="alertCheckIp"></strong>
         </span>
         <div class="title m-b-md">
             <!--button type="button" class="btn btn-default"><a href="{{ route('punch') }}">上一頁</a></button-->
