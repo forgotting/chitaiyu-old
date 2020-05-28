@@ -25,6 +25,9 @@
 
 <div class="flex-center position-ref full-height">
     <div class="content">
+        <span class="invalid-feedback alert-danger" style="font-size: 30px;" role="alert">
+            <strong id="alertCheckIp">test</strong>
+        </span>
         <div class="title m-b-md">
             <!--button type="button" class="btn btn-default"><a href="{{ route('punch') }}">上一頁</a></button-->
             <div class="col-4">
@@ -271,7 +274,7 @@ function punch (event) {
         },
         error: function(result){
             if (result.status === 401) {
-                $("#alertMsg").html("請確認您登入的IP" + result.responseText);
+                $("#alertCheckIp").html("請確認您登入的IP" + result.responseText);
             }             
         }
     });
