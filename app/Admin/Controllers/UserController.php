@@ -3,10 +3,17 @@
 namespace App\Admin\Controllers;
 
 use App\User;
+use App\Punch;
+use Illuminate\Support\Facades\DB;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
+use Encore\Admin\Admin;
+use Encore\Admin\Widgets\Table;
+use Calendar;
+use Illuminate\Contracts\Support\Renderable;
+
 
 class UserController extends AdminController
 {
@@ -24,20 +31,66 @@ class UserController extends AdminController
      */
     protected function grid()
     {
-        $grid = new Grid(new User());
-        $grid->column('id', __(''));
-        $grid->column('name', __('姓名'))->link(function () {
-            return url("../punch/" . $this->id);
-        });
-        /*$users = new User();
-        $grid->column('name', __('姓名'))->modal('行事曆', function ($model) {
+        Admin::css('https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css');
+        Admin::js('https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js');
+        Admin::js('https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.js');
 
-            $users = $model->users()->take(10)->get()->map(function ($user) {
-                return $comment->only(['id', 'content', 'created_at']);
-            });
+        $grid = new Grid(new User());
         
-            return new Table(['ID', '姓名', 'email'], $users->toArray());
-        });*/
+        $grid->column('name', __('姓名'))->modal("行事曆", function ($model) {
+            $id = $model->id;
+            $punches = DB::table('punches')->where('userid', $id)->get();
+            $punches = $punches->map(function ($punch) use ($id) {
+                $title = "上班".$punch->punch_time;
+                $color = "#337AB7";
+                $year_month = substr($punch->punch_year_month, 0, 4) . "-" .substr($punch->punch_year_month, -2);
+                $punch_date = $year_month . "-" . $punch->punch_date;
+                $start_date = $punch_date;
+                $end_date = $punch_date;
+                
+                if ($punch->description == "2") {
+                    $title = "下班 ".$punch->punch_time;
+                    $color = "#5CB85C";
+                }
+
+                if ($punch->description == "3") {
+                    $title = "請假 ".$punch->punch_time." ~ ".$punch->punch_end_time;
+                    $color = 'red';
+                    $end_year_month = substr($punch->punch_end_year_month, 0, 4) . "-" .substr($punch->punch_end_year_month, -2);
+                    $end_date = $year_month . "-" . $punch->punch_end_date;
+                    $end_date = $punch_date." ".$punch->punch_end_time;
+                }
+                
+                return Calendar::event($title, true, $start_date, $end_date, null, ['color' => $color]);
+            });
+            $calendar = Calendar::addEvents($punches)->setId($id)->setOptions([
+                'monthNames' => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
+                'dayNames' => ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+                'defaultView' => 'month',
+                'firstDay' => 1,
+                'timeFormat' => 'H(:mm)',
+                'displayEventTime' => false,
+                'timezone' => 'Asia/Taipei',
+                'header' => [
+                    'left' => 'prev, next today',
+                    'center' => 'title',
+                    'right' => 'punchButton, excelButton'
+                ],
+                'buttonText' => [
+                    'today' => '今天',
+                    'month' => '月',
+                    'week' => '周',
+                    'day' => '日'
+                ],
+                'views' => [
+                    'month' => [
+                        'titleFormat' => 'YYYY年 M月',
+                        'columnFormat' => 'dddd'
+                    ]
+                ]]);
+
+            return $calendar->calendar().$calendar->script();
+        });
         $grid->column('email', __('電子郵件'));
         $grid->column('created_at', __('建立時間'));
         $grid->column('updated_at', __('修改時間'));

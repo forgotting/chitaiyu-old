@@ -250,7 +250,6 @@ function punch (event) {
         dataType: "json",
         url: event.data.url,
         success: function(result){
-            $("[class^=alert_]").hide();
             $(element).attr("disabled", true);
             $(element).html(result.punch_time);
             if (result.description == "1") {
@@ -272,10 +271,7 @@ function punch (event) {
         },
         error: function(result){
             if (result.status === 401) {
-                $("[class^=alert_]").hide();
-                $(".alert_"+id).show();
-                alert(result.responseText);
-                //$(".errormsg_"+$id).html("請確認您登入的IP" + result.responseText);
+                $("#alertMsg").html("請確認您登入的IP" + result.responseText);
             }             
         }
     });
