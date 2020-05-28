@@ -151,7 +151,7 @@ class Calendar
      *
      * @param array|ArrayAccess $events
      * @param array $customAttributes
-     * @return $thisa
+     * @return $this
      */
     public function addEvents($events, array $customAttributes = [])
     {

@@ -7,7 +7,7 @@ class EventCollection
 
     /**
      * @var Collection
-     * protected
+     * protecte
      */
     public $events;
 
