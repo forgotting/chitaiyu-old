@@ -1,4 +1,4 @@
-<?php namespace MaddHatter\LaravelFullcalendar;
+<?php namespace App\Providers\laravel_fullcalendar\src\MaddHatter\LaravelFullcalendar;
 
 use ArrayAccess;
 use DateTime;
@@ -155,7 +155,7 @@ class Calendar
      */
     public function addEvents($events, array $customAttributes = [])
     {
-        //$this->eventCollection->events = new Collection();
+        $this->eventCollection->events = new Collection();
         
         foreach ($events as $event) {
             $this->eventCollection->push($event, $customAttributes);

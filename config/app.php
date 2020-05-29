@@ -179,6 +179,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         //Excel
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        //laravelcalendar self
+        App\Providers\laravel_fullcalendar\src\MaddHatter\LaravelFullcalendar\ServiceProvider::class,
 
     ],
 
@@ -235,6 +237,7 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         //Excel
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Calendar_self' => App\Providers\laravel_fullcalendar\src\MaddHatter\LaravelFullcalendar\Facades\Calendar::class,
 
     ],
 

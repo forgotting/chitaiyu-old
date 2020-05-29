@@ -11,7 +11,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Show;
 use Encore\Admin\Admin;
 use Encore\Admin\Widgets\Table;
-use Calendar;
+use Calendar_self;
 use Illuminate\Contracts\Support\Renderable;
 
 
@@ -61,9 +61,10 @@ class UserController extends AdminController
                     $end_date = $punch_date." ".$punch->punch_end_time;
                 }
                 
-                return Calendar::event($title, true, $start_date, $end_date, null, ['color' => $color]);
+                return Calendar_self::event($title, true, $start_date, $end_date, null, ['color' => $color]);
             });
-            $calendar = Calendar::addEvents($punches)->setId($id)->setOptions([
+            //$punches = new Collection($punches);
+            $calendar = Calendar_self::addEvents($punches)->setId($id)->setOptions([
                 'monthNames' => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
                 'dayNames' => ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
                 'defaultView' => 'month',
