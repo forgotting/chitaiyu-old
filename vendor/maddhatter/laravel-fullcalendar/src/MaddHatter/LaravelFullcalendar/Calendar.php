@@ -19,7 +19,7 @@ class Calendar
     protected $eventCollection;
 
     /**
-     * @var string1
+     * @var string
      */
     protected $id;
 
