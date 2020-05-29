@@ -9,7 +9,7 @@ class EventCollection
      * @var Collection
      * 
      */
-    public $events;
+    protected $events;
 
     public function __construct()
     {

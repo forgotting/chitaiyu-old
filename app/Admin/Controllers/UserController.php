@@ -131,7 +131,7 @@ class UserController extends AdminController
 
         $form->text('name', __('姓名'));
         $form->email('email', __('電子郵件'));
-        $form->image('img_src', __('照片'));
+        //$form->image('img_src', __('照片'));
         $form->password('password', __('密碼'));
         $form->text('remember_token', __('Remember token'));
 
