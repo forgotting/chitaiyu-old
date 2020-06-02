@@ -18,9 +18,10 @@
     }
     .thumbnail:hover{
         opacity: 0.7;
+        background-color: #A428FA;
     }
     .title_image {
-        font-size:50px;
+        font-size:60px;
         text-align: center;
     }
     .title_image:link {
@@ -83,7 +84,6 @@
             <div class="col-md-3">
                 <div class="thumbnail">
                     <a href="/punch/{{ $user->id }}">
-                        <img src="https://dummyimage.com/600x400/87a1b0/fff.png&text=%E5%BF%97%E6%B3%B0%E9%A4%98%E7%B4%99%E8%A2%8B%E5%B1%95%E6%A5%AD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8" alt="photo" style="width:300px; height:200px;">
                         <!--img src="{{ URL::asset('uploads/'.$user->img_src) }}" alt="Lights" style="width:300px; height:200px;"-->
                         <div class="caption title_image">
                             <p>{{ $user->name }}</p>

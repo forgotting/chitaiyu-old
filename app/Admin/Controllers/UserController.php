@@ -31,9 +31,23 @@ class UserController extends AdminController
      */
     protected function grid()
     {
+        //Admin::js('https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js');
         Admin::css('https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css');
         Admin::js('https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js');
         Admin::js('https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.js');
+        /*Admin::script('$(".fc-excelButton-button").click( 
+            function() { alert("clicked"); });
+        ');
+        var test = $("#calendar-1").fullCalendar("getDate").format("YYYY");
+        */
+
+        /*Admin::script('
+        var getmonth = $("#calendar-1").fullCalendar("getDate");
+        var year = getmonth.format("YYYY");
+        var month = getmonth.format("MM");
+        $(".fc-excelButton-button").click( 
+            function() { alert(month); });
+        ');*/
 
         $grid = new Grid(new User());
         
@@ -75,7 +89,7 @@ class UserController extends AdminController
                 'header' => [
                     'left' => 'prev, next today',
                     'center' => 'title',
-                    'right' => 'punchButton, excelButton'
+                    'right' => 'punchButton'
                 ],
                 'buttonText' => [
                     'today' => '今天',
@@ -88,11 +102,18 @@ class UserController extends AdminController
                         'titleFormat' => 'YYYY年 M月',
                         'columnFormat' => 'dddd'
                     ]
-                ]]);
+                ],
+                'customButtons' => [
+                    'excelButton' => [
+                        'text' => '下載',
+                        'click' => ''
+                    ]
+                ]
+                ]);
 
             return $calendar->calendar().$calendar->script();
         });
-        $grid->column('email', __('電子郵件'));
+        //$grid->column('email', __('電子郵件'));
         $grid->column('created_at', __('建立時間'));
         $grid->column('updated_at', __('修改時間'));
 
@@ -111,9 +132,9 @@ class UserController extends AdminController
 
         $show->field('id', __('Id'));
         $show->field('name', __('姓名'));
-        $show->field('email', __('電子郵件'));
+        //$show->field('email', __('電子郵件'));
         $show->field('password', __('密碼'));
-        $show->field('remember_token', __('Remember token'));
+        //$show->field('remember_token', __('Remember token'));
         $show->field('created_at', __('建立時間'));
         $show->field('updated_at', __('修改時間'));
 
@@ -130,10 +151,10 @@ class UserController extends AdminController
         $form = new Form(new User());
 
         $form->text('name', __('姓名'));
-        $form->email('email', __('電子郵件'));
+        //$form->email('email', __('電子郵件'));
         //$form->image('img_src', __('照片'));
         $form->password('password', __('密碼'));
-        $form->text('remember_token', __('Remember token'));
+        //$form->text('remember_token', __('Remember token'));
 
         $form->saving(function (Form $form) {
             if ($form->password && $form->model()->password != $form->password) {
