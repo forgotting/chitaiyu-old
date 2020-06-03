@@ -24,7 +24,7 @@ Route::post('/punch/ajax_update', 'PunchController@ajaxUpdate');
 Route::get('/quote/{id}', 'QuoteController@index');
 Route::post('/quote/{id}', 'QuoteController@count');
 
-Route::get('excel/export/punch/{id}/{year}-{month}','ExcelController@punchExport1');
+Route::get('excel/export/punch/{id}/{year}-{month}','ExcelController@punchExport');
 
 Route::post('/login', 'UserController@login')->name('login');
 
