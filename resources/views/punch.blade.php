@@ -67,7 +67,7 @@
 
 <div class="flex-center position-ref full-height">
     <div class="container">
-        <div class="row title" style="margin-top: 100px">
+        <div class="row title" style="margin-top: 50px">
             <div class="col-4">
                 <p id="display-datetime" style="text-align: center;"></p>
                 <p id="punch_year_month" style="display: none;"></p>
