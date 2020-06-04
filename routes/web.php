@@ -26,6 +26,8 @@ Route::post('/quote/{id}', 'QuoteController@count');
 
 Route::get('excel/export/punch/{id}/{year}-{month}','ExcelController@punchExport');
 
+Route::get('excel/export/punches/{year}-{month}','ExcelController@punchAllExport');
+
 Route::post('/login', 'UserController@login')->name('login');
 
 Route::get('/svg', 'UserController@svg');

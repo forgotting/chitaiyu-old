@@ -13,6 +13,7 @@ use Encore\Admin\Admin;
 use Encore\Admin\Widgets\Table;
 use Calendar_self;
 use Illuminate\Contracts\Support\Renderable;
+use Carbon\Carbon;
 
 
 class UserController extends AdminController
@@ -37,19 +38,39 @@ class UserController extends AdminController
         Admin::js('https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.js');
         /*Admin::script('$(".fc-excelButton-button").click( 
             function() { alert("clicked"); });
-        ');
-        var test = $("#calendar-1").fullCalendar("getDate").format("YYYY");
-        */
+        ');*/
+        //var test = $("#calendar-1").fullCalendar("getDate").format("YYYY");
 
-        /*Admin::script('
+        Admin::script('
         var getmonth = $("#calendar-1").fullCalendar("getDate");
         var year = getmonth.format("YYYY");
         var month = getmonth.format("MM");
+        
         $(".fc-excelButton-button").click( 
-            function() { alert(month); });
-        ');*/
+            function() { alert(year+"-"+month); });
+        ');
 
         $grid = new Grid(new User());
+
+        $grid->header(
+            function ($type) { 
+                $now = Carbon::now();
+                $year = $now->format('Y');
+                $mon = $now->format('m');
+                $lastmon = $now->subMonth()->format('m');
+                $lastmon1 = $now->subMonth()->format('m');
+                $lastmon2 = $now->subMonth()->format('m');
+                $lastmon3 = $now->subMonth()->format('m');
+                return '
+                <a href="../excel/export/punches/'.$year.'-'.$mon.'" target="_blank">
+                <button>'.$mon.'</button></a>
+                <a href="../excel/export/punches/'.((int)$mon <= 1?$year-1:$year).'-'.$lastmon.'" target="_blank">
+                <button>'.$lastmon.'</button></a>
+                <a href="../excel/export/punches/'.((int)$mon <= 2?$year-1:$year).'-'.$lastmon1.'" target="_blank">
+                <button>'.$lastmon1.'</button></a>
+                <a href="../excel/export/punches/'.((int)$mon <= 3?$year-1:$year).'-'.$lastmon2.'" target="_blank">
+                <button>'.$lastmon2.'</button></a>';
+        });
         
         $grid->column('name', __('姓名'))->modal("行事曆", function ($model) {
             $id = $model->id;
@@ -89,7 +110,7 @@ class UserController extends AdminController
                 'header' => [
                     'left' => 'prev, next today',
                     'center' => 'title',
-                    'right' => 'punchButton'
+                    'right' => 'excelButton'
                 ],
                 'buttonText' => [
                     'today' => '今天',
@@ -106,7 +127,7 @@ class UserController extends AdminController
                 'customButtons' => [
                     'excelButton' => [
                         'text' => '下載',
-                        'click' => ''
+                        'click' => function (){ alert('tset');}
                     ]
                 ]
                 ]);
@@ -114,6 +135,26 @@ class UserController extends AdminController
             return $calendar->calendar().$calendar->script();
         });
         //$grid->column('email', __('電子郵件'));
+        $grid->column('punch', __('下載打卡紀錄'))->display(
+            function ($type) { 
+                $now = Carbon::now();
+                $year = $now->format('Y');
+                $mon = $now->format('m');
+                $lastmon = $now->subMonth()->format('m');
+                $lastmon1 = $now->subMonth()->format('m');
+                $lastmon2 = $now->subMonth()->format('m');
+                $lastmon3 = $now->subMonth()->format('m');
+                return '
+                <a href="../excel/export/punch/'.$this->id.'/'.$year.'-'.$mon.'" target="_blank">
+                <button>'.$mon.'</button></a>
+                <a href="../excel/export/punch/'.$this->id.'/'.((int)$mon <= 1?$year-1:$year).'-'.$lastmon.'" target="_blank">
+                <button>'.$lastmon.'</button></a>
+                <a href="../excel/export/punch/'.$this->id.'/'.((int)$mon <= 2?$year-1:$year).'-'.$lastmon1.'" target="_blank">
+                <button>'.$lastmon1.'</button></a>
+                <a href="../excel/export/punch/'.$this->id.'/'.((int)$mon <= 3?$year-1:$year).'-'.$lastmon2.'" target="_blank">
+                <button>'.$lastmon2.'</button></a>';
+        });
+        $grid->column('email', __('電子郵件'));
         $grid->column('created_at', __('建立時間'));
         $grid->column('updated_at', __('修改時間'));
 
@@ -132,7 +173,7 @@ class UserController extends AdminController
 
         $show->field('id', __('Id'));
         $show->field('name', __('姓名'));
-        //$show->field('email', __('電子郵件'));
+        $show->field('email', __('電子郵件'));
         $show->field('password', __('密碼'));
         //$show->field('remember_token', __('Remember token'));
         $show->field('created_at', __('建立時間'));
@@ -151,7 +192,7 @@ class UserController extends AdminController
         $form = new Form(new User());
 
         $form->text('name', __('姓名'));
-        //$form->email('email', __('電子郵件'));
+        $form->email('email', __('電子郵件'));
         //$form->image('img_src', __('照片'));
         $form->password('password', __('密碼'));
         //$form->text('remember_token', __('Remember token'));
