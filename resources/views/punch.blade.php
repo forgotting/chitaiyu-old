@@ -12,19 +12,21 @@
     .title {
         font-size:80px;
     }
-    .thumbnail a:link {
+    .thumbnail a:hover {
         text-decoration: none;
-        color: #337ab7; 
-    }
-    .thumbnail:hover{
         background-color: #006600;
+        color: #F8F804; 
+    }
+    .caption:hover{
+        text-decoration: none;
+        background-color: #006600;
+        color: #F8F804;
     }
     .title_image {
         font-size:60px;
         text-align: center;
     }
     .title_image:link {
-        color: #337ab7; 
         text-decoration: none;
     }
     .title_image:hover {
@@ -78,23 +80,21 @@
 
         <div class="row">
         
-            <div class="bd-example" class="punch-center">
             @foreach($users as $user)
-            <div class="col-md-3">
-                <div class="thumbnail">
-                    <a href="/punch/{{ $user->id }}">
-                        <!--img src="{{ URL::asset('uploads/'.$user->img_src) }}" alt="Lights" style="width:300px; height:200px;"-->
-                        <div class="caption title_image">
-                            <p>{{ $user->name }}</p>
-                        </div>
-                    </a>
+                <div class="col-md-3">
+                    <div class="thumbnail">
+                        <a href="/punch/{{ $user->id }}">
+                            <!--img src="{{ URL::asset('uploads/'.$user->img_src) }}" alt="Lights" style="width:300px; height:200px;"-->
+                            <div class="caption title_image">
+                                {{ $user->name }}
+                            </div>
+                        </a>
+                    </div>
                 </div>
-            </div>
                 <!--button type="button" class="btn btn-primary btn-lg title" style="margin: 1% 1%; width: 350px;">
                     <a href="/punch/{{ $user->id }}">{{ $user->name }}</a>
                 </button-->
             @endforeach
-            <div>
         </div>
     </div>
 </div>
