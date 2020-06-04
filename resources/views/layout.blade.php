@@ -55,7 +55,7 @@
                 }
                 .navbar {
                     margin-bottom: 0;
-                    background-color: #f4511e;
+                    background-color: #7D19C3;
                     z-index: 9999;
                     border: 0;
                     font-size: 18px !important;
@@ -64,15 +64,15 @@
                     border-radius: 0;
                 }
                 .navbar li a, .navbar .navbar-brand {
-                    color: #fff !important;
+                    color: #F8F804 !important;
                 }
                 .navbar-nav li a:hover, .navbar-nav li.active a {
-                    color: #f4511e !important;
-                    background-color: #fff !important;
+                    color: #7D19C3 !important;
+                    background-color: #F8F804 !important;
                 }
                 .navbar-default .navbar-toggle {
                     border-color: transparent;
-                    color: #fff !important;
+                    color: #F8F804 !important;
                 }
                 .navbar-right {
                     display: flex;

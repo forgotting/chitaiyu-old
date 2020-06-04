@@ -17,8 +17,7 @@
         color: #337ab7; 
     }
     .thumbnail:hover{
-        opacity: 0.7;
-        background-color: #A428FA;
+        background-color: #006600;
     }
     .title_image {
         font-size:60px;
@@ -28,8 +27,8 @@
         color: #337ab7; 
         text-decoration: none;
     }
-    .title_image a:hover {
-        opacity: 0.7;
+    .title_image:hover {
+        color: #F8F804;
     }
     .btn-primary {
         background-color: #efefef;
