@@ -89,7 +89,7 @@
                         margin-top: 13%;
                     }
                     .navbar-brand {
-                        font-size: 22px;
+                        font-size: 21px;
                     }
                 }
             </style>
