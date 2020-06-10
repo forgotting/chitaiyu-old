@@ -15,7 +15,7 @@ class ExcelController extends Controller
         foreach ($users::all() as $user) {
         $user_name = $user->name;
         $punches = $punch::where('punch_year_month', $year.$month)->where('userid', $user->id)->get();
-        $cellData[] = ['姓名', '日期', '上班時間', '下班時間', '請假開始時間', '請假結束時間'];
+        $cellData[] = ["\xEF\xBB\xBF".'姓名', "\xEF\xBB\xBF".'日期', "\xEF\xBB\xBF".'上班時間', "\xEF\xBB\xBF".'下班時間', "\xEF\xBB\xBF".'請假開始時間', "\xEF\xBB\xBF".'請假結束時間'];
 
         $month_days = $this->days_in_month($month, $year);
         //dd($punches);
