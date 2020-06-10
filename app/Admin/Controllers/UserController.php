@@ -110,7 +110,7 @@ class UserController extends AdminController
                 'header' => [
                     'left' => 'prev, next today',
                     'center' => 'title',
-                    'right' => 'excelButton'
+                    'right' => ''
                 ],
                 'buttonText' => [
                     'today' => '今天',

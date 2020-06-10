@@ -60,9 +60,6 @@
         margin-top: 2rem;
         margin-bottom: 2rem;
     }
-    img {
-  max-width: 100%;
-}
     @media (min-width: 480px) {
     }
 </style>
@@ -77,14 +74,11 @@
                 <p id="punch_time" style="display: none;"></p>
             </div>
         </div>
-
         <div class="row">
-        
             @foreach($users as $user)
                 <div class="col-md-3">
                     <div class="thumbnail">
                         <a href="/punch/{{ $user->id }}">
-                            <!--img src="{{ URL::asset('uploads/'.$user->img_src) }}" alt="Lights" style="width:300px; height:200px;"-->
                             <div class="caption title_image">
                                 {{ $user->name }}
                             </div>
