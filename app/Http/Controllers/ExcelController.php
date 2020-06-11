@@ -13,53 +13,53 @@ class ExcelController extends Controller
         $punch = new Punch;
         $users = new User;
         foreach ($users::all() as $user) {
-        $user_name = $user->name;
-        $punches = $punch::where('punch_year_month', $year.$month)->where('userid', $user->id)->get();
-        $cellData[] = [iconv("UTF-8", "BIG5", '姓名'), 
-        iconv("UTF-8", "BIG5", '日期'), 
-        iconv("UTF-8", "BIG5", '上班時間'), 
-        iconv("UTF-8", "BIG5", '下班時間'), 
-        iconv("UTF-8", "BIG5", '請假開始時間'), 
-        iconv("UTF-8", "BIG5", '請假結束時間')];
+            $user_name = iconv("UTF-8", "BIG5", $user->name);
+            $punches = $punch::where('punch_year_month', $year.$month)->where('userid', $user->id)->get();
+            $cellData[] = [iconv("UTF-8", "BIG5", '姓名'),
+            iconv("UTF-8", "BIG5", '日期'),
+            iconv("UTF-8", "BIG5", '上班時間'),
+            iconv("UTF-8", "BIG5", '下班時間'),
+            iconv("UTF-8", "BIG5", '請假開始時間'),
+            iconv("UTF-8", "BIG5", '請假結束時間')];
 
-        $month_days = $this->days_in_month($month, $year);
-        //dd($punches);
+            $month_days = $this->days_in_month($month, $year);
+            //dd($punches);
 
-        for($day = 1; $day <= $month_days; $day++) {
-            $start_time = "";
-            $end_time = "";
-            $punch_time = "";
-            $punch_end_time = "";
+            for($day = 1; $day <= $month_days; $day++) {
+                $start_time = "";
+                $end_time = "";
+                $punch_time = "";
+                $punch_end_time = "";
 
-            foreach ($punches as $key => $value) {
+                foreach ($punches as $key => $value) {
 
-                if ($value->punch_date == $day) {
+                    if ($value->punch_date == $day) {
 
-                    if ($value->description == "1") {
-                        $start_time = $value->punch_time;
-                    }
-
-                    if ($value->description == "2") {
-                        $end_time = $value->punch_time;
-                    }
-                }
-
-                if ($value->description == "3") {
-
-                    if ($value->punch_date <= $day && $value->punch_end_date >= $day) {
-                        
-                        if ($value->punch_date == $day) {
-                            $punch_time = $value->punch_time;
+                        if ($value->description == "1") {
+                            $start_time = $value->punch_time;
                         }
 
-                        if ($value->punch_end_date == $day) {
-                            $punch_end_time = $value->punch_end_time;
+                        if ($value->description == "2") {
+                            $end_time = $value->punch_time;
+                        }
+                    }
+
+                    if ($value->description == "3") {
+
+                        if ($value->punch_date <= $day && $value->punch_end_date >= $day) {
+                            
+                            if ($value->punch_date == $day) {
+                                $punch_time = $value->punch_time;
+                            }
+
+                            if ($value->punch_end_date == $day) {
+                                $punch_end_time = $value->punch_end_time;
+                            }
                         }
                     }
                 }
+                $cellData[] = [$user_name, $day, $start_time, $end_time, $punch_time, $punch_end_time];
             }
-            $cellData[] = [$user_name, $day, $start_time, $end_time, $punch_time, $punch_end_time];
-        }
         }
         $filename = $year . $month . ".csv";
         $f = fopen('php://memory', 'w'); // 寫入 php://memory
@@ -80,7 +80,11 @@ class ExcelController extends Controller
         $users = new User;
         $user_name = $users::where('id', $id)->first()->name;
         $punches = $punch::where('punch_year_month', $year.$month)->where('userid', $id)->get();
-        $cellData[] = ['日期', '上班時間', '下班時間', '請假開始時間', '請假結束時間'];
+        $cellData[] = [iconv("UTF-8", "BIG5", '日期'),
+            iconv("UTF-8", "BIG5", '上班時間'),
+            iconv("UTF-8", "BIG5", '下班時間'),
+            iconv("UTF-8", "BIG5", '請假開始時間'),
+            iconv("UTF-8", "BIG5", '請假結束時間')];
 
         $month_days = $this->days_in_month($month, $year);
         //dd($punches);
