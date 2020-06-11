@@ -32,23 +32,20 @@ class UserController extends AdminController
      */
     protected function grid()
     {
-        //Admin::js('https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js');
-        Admin::css('https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css');
-        Admin::js('https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js');
-        Admin::js('https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.js');
-        /*Admin::script('$(".fc-excelButton-button").click( 
-            function() { alert("clicked"); });
-        ');*/
+        // Admin::css('https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css');
+        // Admin::js('https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js');
+        // Admin::js('https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.js');
+
         //var test = $("#calendar-1").fullCalendar("getDate").format("YYYY");
 
-        Admin::script('
+        /*Admin::script('
         var getmonth = $("#calendar-1").fullCalendar("getDate");
         var year = getmonth.format("YYYY");
         var month = getmonth.format("MM");
         
         $(".fc-excelButton-button").click( 
             function() { alert(year+"-"+month); });
-        ');
+        ');*/
 
         $grid = new Grid(new User());
 
