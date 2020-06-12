@@ -21,6 +21,7 @@
         text-decoration: none;
         background-color: #006600;
         color: #F8F804;
+        transition: color 0.5s;
     }
     .title_image {
         font-size:60px;
@@ -31,6 +32,7 @@
     }
     .title_image:hover {
         color: #F8F804;
+        transition: color 0.5s;
     }
     .btn-primary {
         background-color: #efefef;

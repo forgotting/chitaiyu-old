@@ -194,10 +194,10 @@ class UserController extends AdminController
     {
         $form = new Form(new User());
 
-        $form->text('name', __('姓名'));
+        $form->text('name', __('姓名'))->rules('required', ['required' => '必填欄位']);
         $form->email('email', __('電子郵件'));
         //$form->image('img_src', __('照片'));
-        $form->password('password', __('密碼'));
+        $form->password('password', __('密碼'))->rules('required', ['required' => '必填欄位']);
         //$form->text('remember_token', __('Remember token'));
 
         $form->saving(function (Form $form) {
@@ -206,6 +206,12 @@ class UserController extends AdminController
             } else {
                 $form->password = $form->model()->password;
             }
+        });
+        // $form->deleting(function (Form $form) {
+        //     $form->add(new Delete);
+        // });
+        $form->tools(function (Form\Tools $tools) {
+            $tools->disableDelete();
         });
 
         return $form;

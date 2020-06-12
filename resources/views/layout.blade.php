@@ -71,7 +71,9 @@
                 }
                 .navbar-nav li a:hover, .navbar-nav li.active a {
                     color: #7D19C3 !important;
+                    transition: color 0.5s;
                     background-color: #F8F804 !important;
+                    transition: background-color 0.5s;
                 }
                 .navbar-default .navbar-toggle {
                     border-color: transparent;
