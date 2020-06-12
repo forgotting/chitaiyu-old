@@ -14,6 +14,7 @@ use Encore\Admin\Widgets\Table;
 use Calendar_self;
 use Illuminate\Contracts\Support\Renderable;
 use Carbon\Carbon;
+use App\Admin\Actions\Punch\Delete;
 
 
 class UserController extends AdminController
@@ -154,7 +155,12 @@ class UserController extends AdminController
         $grid->column('email', __('電子郵件'));
         $grid->column('created_at', __('建立時間'));
         $grid->column('updated_at', __('修改時間'));
-
+        $grid->actions(function ($actions) {
+            // 去掉删除
+            $actions->disableDelete();
+            $actions->add(new Delete);
+        });
+        
         return $grid;
     }
 
