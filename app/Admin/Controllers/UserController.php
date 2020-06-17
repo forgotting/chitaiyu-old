@@ -10,11 +10,13 @@ use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
 use Encore\Admin\Admin;
+use Encore\Admin\Widgets\Box;
 use Encore\Admin\Widgets\Table;
 use Calendar_self;
 use Illuminate\Contracts\Support\Renderable;
 use Carbon\Carbon;
 use App\Admin\Actions\Punch\Delete;
+use Illuminate\Support\Arr;
 
 
 class UserController extends AdminController
@@ -33,10 +35,6 @@ class UserController extends AdminController
      */
     protected function grid()
     {
-        // Admin::css('https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css');
-        // Admin::js('https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js');
-        // Admin::js('https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.js');
-
         //var test = $("#calendar-1").fullCalendar("getDate").format("YYYY");
 
         /*Admin::script('
@@ -53,12 +51,24 @@ class UserController extends AdminController
         $grid->header(
             function ($type) { 
                 $now = Carbon::now();
+                $users = User::orderBy('users.id', 'asc');
+                // $punch_user = $users->leftJoin('punches', 'users.id', '=', 'punches.userid')
+                //     ->where('punches.punch_year_month', $now->format('Ym'))
+                //     ->where('punches.punch_date', $now->day)
+                //     ->where('punches.description', "1")
+                //     ->get()
+                //     ->pluck('punch_time');
+                //dd($punch_user);
+                //$gender = ["m" => 3, "f" => 5, "a" => 9];
+                $users = $users->get()->pluck('name')->toArray();
+                $doughnut = view('admin.chart.gender', compact('users'));
                 $year = $now->format('Y');
                 $mon = $now->format('m');
                 $lastmon = $now->subMonth()->format('m');
                 $lastmon1 = $now->subMonth()->format('m');
                 $lastmon2 = $now->subMonth()->format('m');
                 $lastmon3 = $now->subMonth()->format('m');
+                //return new Box('今日打卡紀錄', $doughnut).'
                 return '
                 <a href="../excel/export/punches/'.$year.'-'.$mon.'" target="_blank">
                 <button>'.$mon.'</button></a>
@@ -96,7 +106,6 @@ class UserController extends AdminController
                 
                 return Calendar_self::event($title, true, $start_date, $end_date, null, ['color' => $color]);
             });
-            //$punches = new Collection($punches);
             $calendar = Calendar_self::addEvents($punches)->setId($id)->setOptions([
                 'monthNames' => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
                 'dayNames' => ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
