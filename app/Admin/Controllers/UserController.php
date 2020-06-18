@@ -52,24 +52,63 @@ class UserController extends AdminController
             function ($type) { 
                 $now = Carbon::now();
                 $users = User::orderBy('users.id', 'asc');
+                $punch_user = DB::table('users')
+                    ->leftJoin('punches', 'users.id', '=', 'punches.userid')
+                    ->where('punches.punch_year_month', $now->format('Ym'))
+                    ->where('punches.punch_date', $now->day)
+                    //->where('punches.description', "1")
+                    ->get();
                 // $punch_user = $users->leftJoin('punches', 'users.id', '=', 'punches.userid')
                 //     ->where('punches.punch_year_month', $now->format('Ym'))
                 //     ->where('punches.punch_date', $now->day)
                 //     ->where('punches.description', "1")
-                //     ->get()
-                //     ->pluck('punch_time');
+                //     ->get();
+                    //->toArray();
                 //dd($punch_user);
+                $punch_start_today = [];
+                $punch_end_today = [];
+
+                foreach ($users->get() as $user) {
+                    foreach ($punch_user as $punch){
+                        if ($punch->description == "1") {
+                            if ($user->id == $punch->userid) {
+                                $punchtime = explode(":", $punch->punch_time);
+                                if ($punchtime[0] >= 12) {
+                                    $punchtime[0] = $punchtime[0] - 12;
+                                }
+                                $ptime = (int)$punchtime[1]/60;
+                                $ptime = $punchtime[0] + $ptime;
+                                $punch_start_today[$user->id] = round($ptime, 2);
+                            } else {
+                                $punch_start_today[$user->id] = 0;
+                            }
+                        }
+                        if ($punch->description == "2") {
+                            if ($user->id == $punch->userid) {
+                                $punchtime = explode(":", $punch->punch_time);
+                                if ($punchtime[0] >= 12) {
+                                    $punchtime[0] = $punchtime[0] - 12;
+                                }
+                                $ptime = (int)$punchtime[1]/60;
+                                $ptime = (int)$punchtime[0] + $ptime;
+                                $punch_end_today[$user->id] = round($ptime, 2);
+                            } else {
+                                $punch_end_today[$user->id] = 0;
+                            }
+                        }
+                    }
+                }
+                //dd($punch_start_today);
                 //$gender = ["m" => 3, "f" => 5, "a" => 9];
                 $users = $users->get()->pluck('name')->toArray();
-                $doughnut = view('admin.chart.gender', compact('users'));
+                $doughnut = view('admin.chart.gender', compact('users', 'punch_start_today', 'punch_end_today'));
                 $year = $now->format('Y');
                 $mon = $now->format('m');
                 $lastmon = $now->subMonth()->format('m');
                 $lastmon1 = $now->subMonth()->format('m');
                 $lastmon2 = $now->subMonth()->format('m');
                 $lastmon3 = $now->subMonth()->format('m');
-                //return new Box('今日打卡紀錄', $doughnut).'
-                return '
+                return new Box('今日打卡紀錄', $doughnut).'
                 <a href="../excel/export/punches/'.$year.'-'.$mon.'" target="_blank">
                 <button>'.$mon.'</button></a>
                 <a href="../excel/export/punches/'.((int)$mon <= 1?$year-1:$year).'-'.$lastmon.'" target="_blank">

@@ -8,7 +8,7 @@ $(function () {
             labels: ["{!! implode('","', $users) !!}"],
             datasets: [{
                 label: '上班',
-                data: [7.5, 9, 10],
+                data: ["{!! implode('","', $punch_start_today) !!}"],
                 backgroundColor: [
                     'rgba(54, 162, 235, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -22,7 +22,7 @@ $(function () {
                 borderWidth: 1
                 }, {
                 label: '下班',
-                data: [5, 6, 4],
+                data: ["{!! implode('","', $punch_end_today) !!}"],
                 backgroundColor: [
                     'rgba(75, 192, 192, 0.2)',
                     'rgba(75, 192, 192, 0.2)',
@@ -42,7 +42,8 @@ $(function () {
                 yAxes: [{
                     ticks: {
                         min: 0,
-                        max: 12
+                        max: 12,
+                        stepSize: 2
                     }
                 }]
             }
