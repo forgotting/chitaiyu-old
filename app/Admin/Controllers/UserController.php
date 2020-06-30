@@ -56,20 +56,13 @@ class UserController extends AdminController
                     ->leftJoin('punches', 'users.id', '=', 'punches.userid')
                     ->where('punches.punch_year_month', $now->format('Ym'))
                     ->where('punches.punch_date', $now->day)
-                    //->where('punches.description', "1")
                     ->get();
-                // $punch_user = $users->leftJoin('punches', 'users.id', '=', 'punches.userid')
-                //     ->where('punches.punch_year_month', $now->format('Ym'))
-                //     ->where('punches.punch_date', $now->day)
-                //     ->where('punches.description', "1")
-                //     ->get();
-                    //->toArray();
-                //dd($punch_user);
                 $punch_start_today = [];
                 $punch_end_today = [];
 
                 foreach ($users->get() as $user) {
                     foreach ($punch_user as $punch){
+                        
                         if ($punch->description == "1") {
                             if ($user->id == $punch->userid) {
                                 $punchtime = explode(":", $punch->punch_time);
@@ -98,10 +91,8 @@ class UserController extends AdminController
                         }
                     }
                 }
-                //dd($punch_start_today);
-                //$gender = ["m" => 3, "f" => 5, "a" => 9];
                 $users = $users->get()->pluck('name')->toArray();
-                $doughnut = view('admin.chart.gender', compact('users', 'punch_start_today', 'punch_end_today'));
+                $doughnut = view('admin.chart.punch', compact('users', 'punch_start_today', 'punch_end_today'));
                 $year = $now->format('Y');
                 $mon = $now->format('m');
                 $lastmon = $now->subMonth()->format('m');

@@ -24,7 +24,7 @@
         transition: color 0.5s;
     }
     .title_image {
-        font-size:60px;
+        font-size: 55px;
         text-align: center;
     }
     .title_image:link {
