@@ -10,28 +10,28 @@ $(function () {
                 label: '上班',
                 data: ["{!! implode('","', $punch_start_today) !!}"],
                 backgroundColor: [
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(54, 162, 235, 0.2)'
+                    @foreach($users as $user)
+                        'rgba(54, 162, 235, 0.2)',
+                    @endforeach
                 ],
                 borderColor: [
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(54, 162, 235, 1)'
+                    @foreach($users as $user)
+                        'rgba(54, 162, 235, 1)',
+                    @endforeach
                 ],
                 borderWidth: 1
                 }, {
                 label: '下班',
                 data: ["{!! implode('","', $punch_end_today) !!}"],
                 backgroundColor: [
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(75, 192, 192, 0.2)'
+                    @foreach($users as $user)
+                        'rgba(75, 192, 192, 0.2)',
+                    @endforeach
                 ],
                 borderColor: [
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(75, 192, 192, 1)'
+                    @foreach($users as $user)
+                        'rgba(75, 192, 192, 1)',
+                    @endforeach
                 ],
                 borderWidth: 1
             }]

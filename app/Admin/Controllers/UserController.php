@@ -61,21 +61,24 @@ class UserController extends AdminController
                 $punch_end_today = [];
 
                 foreach ($users->get() as $user) {
+                    $punch_start_today[$user->id] = 0;
+                    $punch_end_today[$user->id] = 0;
+
                     foreach ($punch_user as $punch){
-                        
+
                         if ($punch->description == "1") {
                             if ($user->id == $punch->userid) {
                                 $punchtime = explode(":", $punch->punch_time);
+                                
                                 if ($punchtime[0] >= 12) {
                                     $punchtime[0] = $punchtime[0] - 12;
                                 }
                                 $ptime = (int)$punchtime[1]/60;
                                 $ptime = $punchtime[0] + $ptime;
                                 $punch_start_today[$user->id] = round($ptime, 2);
-                            } else {
-                                $punch_start_today[$user->id] = 0;
                             }
                         }
+
                         if ($punch->description == "2") {
                             if ($user->id == $punch->userid) {
                                 $punchtime = explode(":", $punch->punch_time);
@@ -85,8 +88,6 @@ class UserController extends AdminController
                                 $ptime = (int)$punchtime[1]/60;
                                 $ptime = (int)$punchtime[0] + $ptime;
                                 $punch_end_today[$user->id] = round($ptime, 2);
-                            } else {
-                                $punch_end_today[$user->id] = 0;
                             }
                         }
                     }

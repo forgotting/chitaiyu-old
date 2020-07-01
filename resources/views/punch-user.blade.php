@@ -106,92 +106,156 @@ $(document).ready(function() {
     }, 1);
     $("#work").click({url: "{{ url('/punch/start_work/') }}", status: 1}, punch);
     $("#finish").click({url: "{{ url('/punch/stop_work/') }}", status: 2}, punch);
-    $("#loginModal").modal('show');
-    $('#loginModal').on('hidden.bs.modal', function () {
-        window.location.href = "{{ route('punch') }}";
-    });
-    $("#loginSubmit").on('click', function(e) {
-        e.preventDefault();
-        var id = {{ Request::route('id') }};
-        var data = {
-            _token: '{{ csrf_token() }}',
-            id: $("[name='id']").val(),
-            password: $("[name='password']").val()
-        };
+    // $("#loginModal").modal('show');
+    // $('#loginModal').on('hidden.bs.modal', function () {
+    //     window.location.href = "{{ route('punch') }}";
+    // });
+    // $("#loginSubmit").on('click', function(e) {
+    //     e.preventDefault();
+    //     var id = {{ Request::route('id') }};
+    //     var data = {
+    //         _token: '{{ csrf_token() }}',
+    //         id: $("[name='id']").val(),
+    //         password: $("[name='password']").val()
+    //     };
 
-        $.post('/login', data, function(result) {
+    //     $.post('/login', data, function(result) {
 
-            if (result.result == true) {
-                $("#loginModal").hide();
-                $(".modal-backdrop").remove();
-                $('#calendar').fullCalendar({
-                    // put your options and callbacks here
-                    customButtons: {
-                        punchButton: {
-                            text: '請假',
-                            click: function() {
-                                $('#editModal').modal();
-                            }
-                        },
-                        excelButton: {
-                            text: '下載',
-                            click: function(e) {
-                                e.preventDefault();
-                                var date = new Date();
-                                var getmonth = $('#calendar').fullCalendar('getDate');
-                                var year = getmonth.format('YYYY');
-                                var month = getmonth.format('MM');
-                                window.location.href = "{{ url('/excel/export/punch/'.Request::route('id')) }}/" + year +"-"+ month;
-                            }
-                        }
-                    },
-                    header: {
-                        left: 'prev, next today',
-                        center: 'title',
-                        right: 'punchButton, excelButton'
-                    },
-                    buttonText: {
-                        today: '今天',
-                        month: '月',
-                        week: '周',
-                        day: '日'
-                    },
-                    views: {
-                        month: {
-                            titleFormat: 'YYYY年 M月',
-                            columnFormat: 'dddd'
-                        }
-                    },
-                    monthNames: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
-                    dayNames: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
-                    defaultView: 'month',
-                    firstDay: 1,
-                    timeFormat: 'H(:mm)',
-                    displayEventTime: false,
-                    timezone: 'Asia/Taipei',
-                    events: [
-                        @foreach($events as $event)
-                        {
-                            id: '{{ $event->id }}',
-                            title: '{{ $event->title }} {{ $event->time }}',
-                            start: '{{ $event->year_month }}-{{ $event->date }} {{ $event->time }}',
-                            color: '#337AB7',
-                            @if ($event->title == "下班")
-                                color: '#5CB85C',
-                            @endif
-                            @if ($event->end_date != "")
-                                title: '{{ $event->title }} {{ $event->time }} ~ {{ $event->end_time }}',
-                                end: '{{ $event->end_year_month }}-{{ $event->end_date }} {{ $event->end_time }}',
-                                color: 'red',
-                            @endif
-                        },
-                        @endforeach
-                    ],
-                });
-            } else {
-                $("#alertMsg").html(result.msg);
+    //         if (result.result == true) {
+    //             $("#loginModal").hide();
+    //             $(".modal-backdrop").remove();
+    //             $('#calendar').fullCalendar({
+    //                 // put your options and callbacks here
+    //                 customButtons: {
+    //                     punchButton: {
+    //                         text: '請假',
+    //                         click: function() {
+    //                             $('#editModal').modal();
+    //                         }
+    //                     },
+    //                     excelButton: {
+    //                         text: '下載',
+    //                         click: function(e) {
+    //                             e.preventDefault();
+    //                             var date = new Date();
+    //                             var getmonth = $('#calendar').fullCalendar('getDate');
+    //                             var year = getmonth.format('YYYY');
+    //                             var month = getmonth.format('MM');
+    //                             window.location.href = "{{ url('/excel/export/punch/'.Request::route('id')) }}/" + year +"-"+ month;
+    //                         }
+    //                     }
+    //                 },
+    //                 header: {
+    //                     left: 'prev, next today',
+    //                     center: 'title',
+    //                     right: 'punchButton, excelButton'
+    //                 },
+    //                 buttonText: {
+    //                     today: '今天',
+    //                     month: '月',
+    //                     week: '周',
+    //                     day: '日'
+    //                 },
+    //                 views: {
+    //                     month: {
+    //                         titleFormat: 'YYYY年 M月',
+    //                         columnFormat: 'dddd'
+    //                     }
+    //                 },
+    //                 monthNames: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
+    //                 dayNames: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+    //                 defaultView: 'month',
+    //                 firstDay: 1,
+    //                 timeFormat: 'H(:mm)',
+    //                 displayEventTime: false,
+    //                 timezone: 'Asia/Taipei',
+    //                 events: [
+    //                     @foreach($events as $event)
+    //                     {
+    //                         id: '{{ $event->id }}',
+    //                         title: '{{ $event->title }} {{ $event->time }}',
+    //                         start: '{{ $event->year_month }}-{{ $event->date }} {{ $event->time }}',
+    //                         color: '#337AB7',
+    //                         @if ($event->title == "下班")
+    //                             color: '#5CB85C',
+    //                         @endif
+    //                         @if ($event->end_date != "")
+    //                             title: '{{ $event->title }} {{ $event->time }} ~ {{ $event->end_time }}',
+    //                             end: '{{ $event->end_year_month }}-{{ $event->end_date }} {{ $event->end_time }}',
+    //                             color: 'red',
+    //                         @endif
+    //                     },
+    //                     @endforeach
+    //                 ],
+    //             });
+    //         } else {
+    //             $("#alertMsg").html(result.msg);
+    //         }
+    //     });
+    // });
+    $('#calendar').fullCalendar({
+        // put your options and callbacks here
+        customButtons: {
+            punchButton: {
+                text: '請假',
+                click: function() {
+                    $('#editModal').modal();
+                }
+            },
+            excelButton: {
+                text: '下載',
+                click: function(e) {
+                    e.preventDefault();
+                    var date = new Date();
+                    var getmonth = $('#calendar').fullCalendar('getDate');
+                    var year = getmonth.format('YYYY');
+                    var month = getmonth.format('MM');
+                    window.location.href = "{{ url('/excel/export/punch/'.Request::route('id')) }}/" + year +"-"+ month;
+                }
             }
-        });
+        },
+        header: {
+            left: 'prev, next today',
+            center: 'title',
+            right: 'punchButton, excelButton'
+        },
+        buttonText: {
+            today: '今天',
+            month: '月',
+            week: '周',
+            day: '日'
+        },
+        views: {
+            month: {
+                titleFormat: 'YYYY年 M月',
+                columnFormat: 'dddd'
+            }
+        },
+        monthNames: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
+        dayNames: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+        defaultView: 'month',
+        firstDay: 1,
+        timeFormat: 'H(:mm)',
+        displayEventTime: false,
+        timezone: 'Asia/Taipei',
+        events: [
+            @foreach($events as $event)
+            {
+                id: '{{ $event->id }}',
+                title: '{{ $event->title }} {{ $event->time }}',
+                start: '{{ $event->year_month }}-{{ $event->date }} {{ $event->time }}',
+                color: '#337AB7',
+                @if ($event->title == "下班")
+                    color: '#5CB85C',
+                @endif
+                @if ($event->end_date != "")
+                    title: '{{ $event->title }} {{ $event->time }} ~ {{ $event->end_time }}',
+                    end: '{{ $event->end_year_month }}-{{ $event->end_date }} {{ $event->end_time }}',
+                    color: 'red',
+                @endif
+            },
+            @endforeach
+        ],
     });
 
     $('#punch_update').click(function(e) {
@@ -253,24 +317,25 @@ function punch (event) {
         dataType: "json",
         url: event.data.url,
         success: function(result){
-            $(element).attr("disabled", true);
-            $(element).html(result.punch_time);
-            if (result.description == "1") {
-                $('#calendar').fullCalendar('renderEvent', 
-                {
-                    title: '上班 ' + result.punch_time,
-                    start: result.punch_date + ' ' + result.punch_time,
-                    color: '#337AB7',
-                }, true);
-            }
-            if (result.description == "2") {
-                $('#calendar').fullCalendar('renderEvent', 
-                {
-                    title: '下班 ' + result.punch_time,
-                    start: result.punch_date + ' ' + result.punch_time,
-                    color: '#5CB85C',
-                }, true);
-            }
+            window.location.href = "{{ route('punch') }}";
+            // $(element).attr("disabled", true);
+            // $(element).html(result.punch_time);
+            // if (result.description == "1") {
+            //     $('#calendar').fullCalendar('renderEvent', 
+            //     {
+            //         title: '上班 ' + result.punch_time,
+            //         start: result.punch_date + ' ' + result.punch_time,
+            //         color: '#337AB7',
+            //     }, true);
+            // }
+            // if (result.description == "2") {
+            //     $('#calendar').fullCalendar('renderEvent', 
+            //     {
+            //         title: '下班 ' + result.punch_time,
+            //         start: result.punch_date + ' ' + result.punch_time,
+            //         color: '#5CB85C',
+            //     }, true);
+            // }
         },
         error: function(result){
             if (result.status === 401) {
