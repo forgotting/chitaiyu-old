@@ -52,9 +52,7 @@ class UserController extends AdminController
             function ($type) { 
                 $now = Carbon::now();
                 $users = User::orderBy('users.id', 'asc');
-                $punch_user = DB::table('users')
-                    ->leftJoin('punches', 'users.id', '=', 'punches.userid')
-                    ->where('punches.punch_year_month', $now->format('Ym'))
+                $punch_user = Punch::where('punches.punch_year_month', $now->format('Ym'))
                     ->where('punches.punch_date', $now->day)
                     ->get();
                 $punch_start_today = [];
