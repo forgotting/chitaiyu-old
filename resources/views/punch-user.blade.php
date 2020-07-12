@@ -316,8 +316,12 @@ function punch (event) {
         },
         dataType: "json",
         url: event.data.url,
-        success: function(result){
-            window.location.href = "{{ route('punch') }}";
+        success: function(result) {
+            if (result.status == false) {
+                $("#alertCheckIp").html(result.status_msg);
+            } else {
+                window.location.href = "{{ route('punch') }}";
+            }
             // $(element).attr("disabled", true);
             // $(element).html(result.punch_time);
             // if (result.description == "1") {

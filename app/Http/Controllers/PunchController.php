@@ -16,21 +16,6 @@ class PunchController extends Controller
         $users = new User;
         $users = $users->get();
 
-        /*foreach ($users as $user) {
-            foreach ($start_punch as $start) {
-                if ($user["id"] == $start["userid"]) {
-                    //上班時間
-                    if ($start["description"] == "1") {
-                        $user["start_date"] = $start["punch_date"];
-                        $user["start_time"] = $start["punch_time"];
-                    }
-                    //下班時間
-                    if ($start["description"] == "2") {
-                        $user["stop_time"] = $start["punch_time"];
-                    }
-                }
-            }
-        }*/
         return view('punch',['users' => $users]);
     }
 
@@ -40,6 +25,8 @@ class PunchController extends Controller
         $punch_date = $request->get('punch_date');
         $punch_time = $request->get('punch_time');
         $punch = new Punch;
+        $status = true;
+        $status_msg = "success";
 
         if ($punch::where('userid', $id)->where('punch_date', $punch_date)->where('punch_year_month', $punch_year_month)->where('description', "1")->count() <= 0) {
             $punch->userid = $id;
@@ -52,7 +39,7 @@ class PunchController extends Controller
         $year_month = substr($punch_year_month, 0, 4) . "-" .substr($punch_year_month, -2);
         $punch_date = $year_month . "-" . $punch_date;
 
-        return response()->json(['punch_date' => $punch_date, 'punch_time' => $punch_time, 'description' => "1"]);
+        return response()->json(['punch_date' => $punch_date, 'punch_time' => $punch_time, 'description' => "1", 'status' => $status, 'status_msg' => $status_msg]);
     }
 
     public function stop(Request $request) {
@@ -61,6 +48,15 @@ class PunchController extends Controller
         $punch_date = $request->get('punch_date');
         $punch_time = $request->get('punch_time');
         $punch = new Punch;
+        //$status = true;
+        $status_msg = "success";
+
+        $status = $this->check_punch($id, $punch_year_month, $punch_date);
+        
+        if ($status == false) {
+            $status_msg = "請確認上班狀態";
+            return response()->json(['punch_date' => $punch_date, 'punch_time' => $punch_time, 'description' => "2", 'status' => $status, 'status_msg' => $status_msg]);
+        }
 
         if ($punch::where('userid', $id)->where('punch_date', $punch_date)->where('punch_year_month', $punch_year_month)->where('description', "2")->count() <= 0) {
             $punch->userid = $id;
@@ -74,7 +70,42 @@ class PunchController extends Controller
         $year_month = substr($punch_year_month, 0, 4) . "-" .substr($punch_year_month, -2);
         $punch_date = $year_month . "-" . $punch_date;
 
-        return response()->json(['punch_date' => $punch_date, 'punch_time' => $punch_time, 'description' => "2"]);
+        return response()->json(['punch_date' => $punch_date, 'punch_time' => $punch_time, 'description' => "2", 'status' => $status, 'status_msg' => $status_msg]);
+    }
+
+    public function check_punch($id, $year_month, $date) {
+        $users = new User;
+        $user_night = $users::where('id', $id)->first()->is_night;
+        $status = true;
+
+        if ($user_night == "0") {
+            $punch = new Punch;
+            $is_punch = $punch::where('userid', $id)
+                ->where('punch_date', $date)
+                ->where('punch_year_month', $year_month)
+                ->where('description', "1")
+                ->count();
+            
+            if ($is_punch <= 0) {
+                $status = false;
+            }
+        } else {
+            $yesterday = Carbon::create(substr($year_month, 0, 4), substr($year_month, -2), $date);
+            Carbon::setTestNow($yesterday); 
+            $yesterday = new Carbon('yesterday');
+            $punch = new Punch;
+            $is_punch = $punch::where('userid', $id)
+                ->where('punch_date', $yesterday->format('d'))
+                ->where('punch_year_month', $yesterday->format('Ym'))
+                ->where('description', "1")
+                ->count();
+            
+            if ($is_punch <= 0) {
+                $status = false;
+            }
+        }
+
+        return $status;
     }
 
     public function user_punch($id) {
@@ -83,16 +114,26 @@ class PunchController extends Controller
         $punch = new Punch;
         $punches = $punch::where('userid', $id)->get();
         $users = new User;
-        $user_name = $users::where('id', $id)->first()->name;
+        $user = $users::where('id', $id)->first();
         $start_punch = "";
         $finish_punch = "";
+        $now_year_month = $now->format('Ym');
+        $now_day = $now->day;
+
+        if ($user->is_night == 1) {
+            $yesterday = Carbon::create($now->format('Y'), $now->format('m'), $now_day);
+            Carbon::setTestNow($yesterday); 
+            $yesterday = new Carbon('yesterday');
+            $now_year_month = $yesterday->format('Ym');
+            $now_day = $yesterday->format('d');
+        }
 
         foreach ($punches as $key => $value) {
             $title = "上班";
             $end_year_month = "";
-            $year_month = substr($value->punch_year_month, 0, 4) . "-" .substr($value->punch_year_month, -2);
+            $year_month = substr($value->punch_year_month, 0, 4) . "-" . substr($value->punch_year_month, -2);
             
-            if ($value->punch_year_month == $now->format('Ym') && $value->punch_date == $now->day) {
+            if ($value->punch_year_month == $now_year_month && $value->punch_date == $now_day) {
                 if ($value->description == "1")
                     $start_punch = $value->punch_time;
                 
@@ -119,7 +160,7 @@ class PunchController extends Controller
               }');
         }
 
-        return view('punch-user', ['events' => $events, 'user_name' => $user_name, 'start_punch' => $start_punch, 'finish_punch' => $finish_punch]);
+        return view('punch-user', ['events' => $events, 'user_name' => $user->name, 'start_punch' => $start_punch, 'finish_punch' => $finish_punch]);
     }
 
     public function checkuser($id, $password) {

@@ -237,6 +237,7 @@ class UserController extends AdminController
         //$form->image('img_src', __('照片'));
         $form->password('password', __('密碼'))->rules('required', ['required' => '必填欄位']);
         //$form->text('remember_token', __('Remember token'));
+        $form->radio('is_night', __('是否中班'))->options(['0' => '否', '1'=> '是'])->default('0');
 
         $form->saving(function (Form $form) {
             if ($form->password && $form->model()->password != $form->password) {
