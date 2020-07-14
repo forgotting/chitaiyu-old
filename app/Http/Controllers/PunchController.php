@@ -120,13 +120,20 @@ class PunchController extends Controller
         $now_year_month = $now->format('Ym');
         $now_day = $now->day;
 
-        if ($user->is_night == 1) {
-            $yesterday = Carbon::create($now->format('Y'), $now->format('m'), $now_day);
-            Carbon::setTestNow($yesterday); 
-            $yesterday = new Carbon('yesterday');
-            $now_year_month = $yesterday->format('Ym');
-            $now_day = $yesterday->format('d');
-        }
+        /*if ($user->is_night == 1) {
+            $is_punch = $punch::where('userid', $id)
+                ->where('punch_date', $now_day)
+                ->where('punch_year_month', $now_year_month)
+                ->where('description', "2")
+                ->count();
+            if ($is_punch <= 0) {
+                $yesterday = Carbon::create($now->format('Y'), $now->format('m'), $now_day);
+                Carbon::setTestNow($yesterday); 
+                $yesterday = new Carbon('yesterday');
+                $now_year_month = $yesterday->format('Ym');
+                $now_day = $yesterday->format('d');
+            }
+        }*/
 
         foreach ($punches as $key => $value) {
             $title = "上班";
