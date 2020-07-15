@@ -58,7 +58,7 @@ class PunchController extends Controller
             return response()->json(['punch_date' => $punch_date, 'punch_time' => $punch_time, 'description' => "2", 'status' => $status, 'status_msg' => $status_msg]);
         }
 
-        if ($punch::where('userid', $id)->where('punch_date', $punch_date)->where('punch_year_month', $punch_year_month)->where('description', "2")->count() <= 0) {
+        if ($punch::where('userid', $id)->where('punch_date', $punch_date)->where('punch_year_month', $punch_year_month)->where('description', "2")->count() <= 1) {
             $punch->userid = $id;
             $punch->punch_year_month = $punch_year_month;
             $punch->punch_date = $punch_date;
@@ -119,21 +119,22 @@ class PunchController extends Controller
         $finish_punch = "";
         $now_year_month = $now->format('Ym');
         $now_day = $now->day;
+        $is_start_punch = 0;
 
-        /*if ($user->is_night == 1) {
-            $is_punch = $punch::where('userid', $id)
+        if ($user->is_night == 1) {
+            $is_start_punch = $punch::where('userid', $id)
                 ->where('punch_date', $now_day)
                 ->where('punch_year_month', $now_year_month)
                 ->where('description', "2")
                 ->count();
-            if ($is_punch <= 0) {
+            if ($is_start_punch <= 0) {
                 $yesterday = Carbon::create($now->format('Y'), $now->format('m'), $now_day);
                 Carbon::setTestNow($yesterday); 
                 $yesterday = new Carbon('yesterday');
                 $now_year_month = $yesterday->format('Ym');
                 $now_day = $yesterday->format('d');
             }
-        }*/
+        }
 
         foreach ($punches as $key => $value) {
             $title = "上班";
@@ -165,6 +166,13 @@ class PunchController extends Controller
                 "end_date": "' . (isset($value->punch_end_date)?str_pad($value->punch_end_date, 2, "0", STR_PAD_LEFT):'') . '",
                 "end_time": "' . (isset($value->punch_end_time)?$value->punch_end_time:'') . '"          
               }');
+        }
+
+        $first = $now->format('Y')."-".$now->format('m')."-".$now_day." ".$start_punch;
+        $second = $now->format('Y')."-".$now->format('m')."-".$now_day." ".$finish_punch;
+        
+        if (strtotime($second) < strtotime($first)) {
+            $finish_punch = "";
         }
 
         return view('punch-user', ['events' => $events, 'user_name' => $user->name, 'start_punch' => $start_punch, 'finish_punch' => $finish_punch]);

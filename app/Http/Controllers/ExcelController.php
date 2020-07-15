@@ -108,6 +108,32 @@ class ExcelController extends Controller
                     }
                 }
 
+                if ($end_time == "") {
+
+                    if ($day == $value->punch_date + 1) {
+                        $start_night_time = "";
+                        $end_night_time = "";
+
+                        if ($value->description == "1") {
+                            $start_night_time = $value->punch_time;
+                        }
+    
+                        if ($value->description == "2") {
+                            $end_night_time = $value->punch_time;
+                        }
+
+                        $year = substr($value->punch_year_month, 0, 4);
+                        $mon = substr($value->punch_year_month, -2);
+                        $date = $value->punch_date;
+                        $first = $year."-".$mon."-".$date." ".$start_night_time;
+                        $second = $year."-".$mon."-".$date." ".$end_night_time;
+
+                        if (strtotime($second) < strtotime($first)) {
+                            $end_time = $end_night_time;
+                        }
+                    }
+                }
+
                 if ($value->description == "3") {
 
                     if ($value->punch_date <= $day && $value->punch_end_date >= $day) {

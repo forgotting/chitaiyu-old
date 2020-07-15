@@ -190,7 +190,15 @@ class UserController extends AdminController
                 <a href="../excel/export/punch/'.$this->id.'/'.((int)$mon <= 3?$year-1:$year).'-'.$lastmon2.'" target="_blank">
                 <button>'.$lastmon2.'</button></a>';
         });
-        $grid->column('email', __('電子郵件'));
+        $grid->column('email', __('電子郵件'))->display(function ($email) {
+
+            $color = "#333333";
+            if ($this->is_night == 1) {
+                $color = "red";
+            }
+            return "<span style='color:".$color."'>$email</span>";
+        
+        });
         $grid->column('created_at', __('建立時間'));
         $grid->column('updated_at', __('修改時間'));
         $grid->actions(function ($actions) {
@@ -235,7 +243,7 @@ class UserController extends AdminController
         $form->text('name', __('姓名'))->rules('required', ['required' => '必填欄位']);
         $form->email('email', __('電子郵件'));
         //$form->image('img_src', __('照片'));
-        $form->password('password', __('密碼'))->rules('required', ['required' => '必填欄位']);
+        $form->password('password', __('密碼'));
         //$form->text('remember_token', __('Remember token'));
         $form->radio('is_night', __('是否中班'))->options(['0' => '否', '1'=> '是'])->default('0');
 
