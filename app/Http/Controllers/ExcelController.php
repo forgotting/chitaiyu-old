@@ -94,6 +94,10 @@ class ExcelController extends Controller
             $end_time = "";
             $punch_time = "";
             $punch_end_time = "";
+            $night_punch_day = "";
+            $night_punch_day = $day + 1;
+            $start_night_time = "";
+            $end_night_time = "";
 
             foreach ($punches as $key => $value) {
 
@@ -106,16 +110,25 @@ class ExcelController extends Controller
                     if ($value->description == "2") {
                         $end_time = $value->punch_time;
                     }
+
+                    $year = substr($value->punch_year_month, 0, 4);
+                    $mon = substr($value->punch_year_month, -2);
+                    $date = $value->punch_date;
+                    $first = $year."-".$mon."-".$date." ".$start_time;
+                    $second = $year."-".$mon."-".$date." ".$end_time;
+                    if (strtotime($second) < strtotime($first)) {
+                        $end_time = "";
+                    }
                 }
 
                 if ($end_time == "") {
-
-                    if ($day == $value->punch_date + 1) {
-                        $start_night_time = "";
-                        $end_night_time = "";
-
+                    if ($night_punch_day == $value->punch_date) {
                         if ($value->description == "1") {
                             $start_night_time = $value->punch_time;
+                        }
+
+                        if ($start_night_time == "") {
+                            $start_night_time = "23:59";
                         }
     
                         if ($value->description == "2") {
@@ -128,10 +141,14 @@ class ExcelController extends Controller
                         $first = $year."-".$mon."-".$date." ".$start_night_time;
                         $second = $year."-".$mon."-".$date." ".$end_night_time;
 
-                        if (strtotime($second) < strtotime($first)) {
+                        if (strtotime($second) <= strtotime($first)) {
                             $end_time = $end_night_time;
                         }
                     }
+                }
+
+                if ($start_time == "") {
+                    $end_time = "";
                 }
 
                 if ($value->description == "3") {
