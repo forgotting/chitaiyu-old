@@ -30,6 +30,9 @@ class ExcelController extends Controller
                 $end_time = "";
                 $punch_time = "";
                 $punch_end_time = "";
+                $night_punch_day = $day + 1;
+                $start_night_time = "";
+                $end_night_time = "";
 
                 foreach ($punches as $key => $value) {
 
@@ -38,10 +41,67 @@ class ExcelController extends Controller
                         if ($value->description == "1") {
                             $start_time = $value->punch_time;
                         }
-
+    
                         if ($value->description == "2") {
                             $end_time = $value->punch_time;
                         }
+    
+                        $year = substr($value->punch_year_month, 0, 4);
+                        $mon = substr($value->punch_year_month, -2);
+                        $date = $value->punch_date;
+                        $first = $year."-".$mon."-".$date." ".$start_time;
+                        $second = $year."-".$mon."-".$date." ".$end_time;
+                        if (strtotime($second) < strtotime($first)) {
+                            $end_time = "";
+                        }
+                    }
+    
+                    if ($end_time == "") {
+                        if ($night_punch_day == $value->punch_date) {
+                            if ($value->description == "1") {
+                                $start_night_time = $value->punch_time;
+                            }
+    
+                            if ($start_night_time == "") {
+                                $start_night_time = "23:59";
+                            }
+        
+                            if ($value->description == "2") {
+                                $end_night_time = $value->punch_time;
+                            }
+    
+                            $year = substr($value->punch_year_month, 0, 4);
+                            $mon = substr($value->punch_year_month, -2);
+                            $date = $value->punch_date;
+                            $first = $year."-".$mon."-".$date." ".$start_night_time;
+                            $second = $year."-".$mon."-".$date." ".$end_night_time;
+    
+                            if (strtotime($second) <= strtotime($first)) {
+                                $end_time = $end_night_time;
+                            }
+                        }
+                        if ($night_punch_day > $month_days) {
+                            $next_year = $year;
+                            $next_month = $month + 1;
+    
+                            if ($next_month > 12) {
+                                $next_year = $next_year + 1;
+                                $next_month = 1;
+                            }
+                            $next_month = str_pad($next_month, 2, "0", STR_PAD_LEFT);
+                            $next_month_punch = $punch::where('punch_year_month', $next_year.$next_month)
+                                ->where('punch_date', 1)
+                                ->where('userid', $user->id)
+                                ->where('description', 2)
+                                ->first();
+                            if (isset($next_month_punch->punch_time)) {
+                                $end_time = $next_month_punch->punch_time;
+                            }
+                        }
+                    }
+    
+                    if ($start_time == "") {
+                        $end_time = "";
                     }
 
                     if ($value->description == "3") {
@@ -87,14 +147,13 @@ class ExcelController extends Controller
             iconv("UTF-8", "BIG5", '請假結束時間')];
 
         $month_days = $this->days_in_month($month, $year);
-        //dd($punches);
+        //dd($month_days);
 
         for($day = 1; $day <= $month_days; $day++) {
             $start_time = "";
             $end_time = "";
             $punch_time = "";
             $punch_end_time = "";
-            $night_punch_day = "";
             $night_punch_day = $day + 1;
             $start_night_time = "";
             $end_night_time = "";
@@ -120,7 +179,7 @@ class ExcelController extends Controller
                         $end_time = "";
                     }
                 }
-
+                
                 if ($end_time == "") {
                     if ($night_punch_day == $value->punch_date) {
                         if ($value->description == "1") {
@@ -143,6 +202,25 @@ class ExcelController extends Controller
 
                         if (strtotime($second) <= strtotime($first)) {
                             $end_time = $end_night_time;
+                        }
+                    }
+                    
+                    if ($night_punch_day > $month_days) {
+                        $next_year = $year;
+                        $next_month = $month + 1;
+
+                        if ($next_month > 12) {
+                            $next_year = $next_year + 1;
+                            $next_month = 1;
+                        }
+                        $next_month = str_pad($next_month, 2, "0", STR_PAD_LEFT);
+                        $next_month_punch = $punch::where('punch_year_month', $next_year.$next_month)
+                            ->where('punch_date', 1)
+                            ->where('userid', $id)
+                            ->where('description', 2)
+                            ->first();
+                        if (isset($next_month_punch->punch_time)) {
+                            $end_time = $next_month_punch->punch_time;
                         }
                     }
                 }
