@@ -43,10 +43,10 @@ class ExcelController extends Controller
     
                 for($day = $week_min ; $day <= $week_max; $day++) {
                     $punch_data = $this->exportExcel($month, $year, $day, $month_days, $punches, $punch, $user->id);
-                    $start_time = "";
-                    $end_time = "";
-                    $punch_time = "";
-                    $punch_end_time = "";
+                    $start_time = "\n";
+                    $end_time = "\n";
+                    $punch_time = "\n";
+                    $punch_end_time = "\n";
                     // $cellData[] = [$day, $punch_data["start_time"], $punch_data["end_time"], $punch_data["punch_time"], $punch_data["punch_end_time"]];
                     if (!empty($punch_data["start_time"])) $start_time = "\n上班:" . $punch_data["start_time"];
                     if (!empty($punch_data["end_time"])) $end_time = "\n下班:" . $punch_data["end_time"];
@@ -127,10 +127,10 @@ class ExcelController extends Controller
 
             for($day = $week_min ; $day <= $week_max; $day++) {
                 $punch_data = $this->exportExcel($month, $year, $day, $month_days, $punches, $punch, $id);
-                $start_time = "";
-                $end_time = "";
-                $punch_time = "";
-                $punch_end_time = "";
+                $start_time = "\n";
+                $end_time = "\n";
+                $punch_time = "\n";
+                $punch_end_time = "\n";
                 // $cellData[] = [$day, $punch_data["start_time"], $punch_data["end_time"], $punch_data["punch_time"], $punch_data["punch_end_time"]];
                 if (!empty($punch_data["start_time"])) $start_time = "\n上班:" . $punch_data["start_time"];
                 if (!empty($punch_data["end_time"])) $end_time = "\n下班:" . $punch_data["end_time"];
